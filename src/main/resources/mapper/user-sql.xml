@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.portfolio.op.mapper.UserMapper">
+
+	<select id="idCheck" parameterType="string" resultType="string">
+		select id from user_t where id = #{id} and enabled = '1' limit 1
+	</select>
+	
+	<select id="findByUserId" parameterType="string" resultType="userDto">
+		SELECT
+			user_id, user_nm, role, tel, user_pwd
+		FROM user_t
+		WHERE user_id = #{userId} AND delete_yn = 'N' AND enabled = 1 
+		LIMIT 1
+	</select>
+	
+	<insert id="insertUser" parameterType="userDto">
+		INSERT INTO user_t 
+			(user_id, user_pwd, tel, user_nm, delete_yn, enabled, role) 
+		VALUES 
+			(#{userId}, #{userPwd}, #{tel}, #{userNm}, 'N', 1, #{role})
+		<selectKey resultType="int" keyProperty="userSeq" order="AFTER">
+        	SELECT LAST_INSERT_ID()
+    	</selectKey>  
+	</insert>
+	
+	<insert id="insertRoles" parameterType="roleDto">
+		INSERT INTO role_t
+			(role_auth, role_nm, user_type, enabled)
+		VALUES
+			(#{roleAuth}, #{roleNm}, #{userType}, '1')
+	</insert>
+	
+</mapper>
